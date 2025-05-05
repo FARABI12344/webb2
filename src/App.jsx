@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../assets/panton.css"; // make sure this CSS file loads the font
+import "./assets/panton.css";
 
 export default function AppStatus() {
   const [darkMode, setDarkMode] = useState(false);
