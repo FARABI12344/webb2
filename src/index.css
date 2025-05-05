@@ -1,7 +1,18 @@
+@font-face {
+  font-family: 'Panton';
+  src: url('./panton.ttf') format('truetype');
+  font-weight: bold;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   font-family: 'Segoe UI', sans-serif;
+}
+
+.panton-heading {
+  font-family: 'Panton', sans-serif;
+  font-weight: bold;
 }
