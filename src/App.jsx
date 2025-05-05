@@ -99,12 +99,12 @@ export default function AppStatus() {
         ></span>
       ))}
 
-      <div className={`w-full ${darkMode ? 'bg-purple-950' : 'bg-white'} border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-md font-bold`}>
-        <div className={`text-4xl font-black tracking-widest ${darkMode ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]' : 'text-black'}`}>AKR IMAGE GEN</div>
-        <div className="flex items-center gap-4">
+      <div className={`w-full ${darkMode ? 'bg-purple-950' : 'bg-white'} border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 py-3 shadow-md font-bold`}>
+        <div className={`text-2xl sm:text-4xl font-black tracking-widest ${darkMode ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]' : 'text-black'}`}>AKR IMAGE GEN</div>
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-full shadow hover:scale-105 transition"
+            className="text-xs sm:text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow hover:scale-105 transition"
           >
             {darkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
@@ -112,32 +112,32 @@ export default function AppStatus() {
             href="https://about.farabi.me"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 underline text-xl font-extrabold hover:text-blue-800 transition-colors"
+            className="text-blue-600 underline text-sm sm:text-xl font-extrabold hover:text-blue-800 transition-colors"
           >
             MADE BY FARABI
           </a>
         </div>
       </div>
 
-      <div className={`mx-auto my-10 p-10 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.2)] border-[6px] ${darkMode ? 'border-purple-700 bg-gray-900 text-purple-100' : 'border-pink-400 bg-white text-pink-900'} w-[90%] max-w-4xl text-center`}>
-        <h1 className="text-5xl font-extrabold mb-6 tracking-wider">FREE IMAGE GEN V1</h1>
+      <div className={`mx-auto my-6 sm:my-10 px-4 sm:p-10 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.2)] border-[4px] sm:border-[6px] ${darkMode ? 'border-purple-700 bg-gray-900 text-purple-100' : 'border-pink-400 bg-white text-pink-900'} w-[95%] sm:w-[90%] max-w-4xl text-center`}>
+        <h1 className="text-3xl sm:text-5xl font-black mb-6 tracking-wide font-[Poppins]">FREE IMAGE GEN V1</h1>
         <input
           type="text"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Type your prompt here"
-          className={`px-6 py-3 rounded-xl text-lg w-full max-w-xl shadow-md outline-none border ${darkMode ? 'border-purple-500 bg-black text-purple-100' : 'border-pink-300 bg-pink-100 text-pink-900'}`}
+          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-lg w-full max-w-xl shadow-md outline-none border ${darkMode ? 'border-purple-500 bg-black text-purple-100' : 'border-pink-300 bg-pink-100 text-pink-900'}`}
         />
-        <div className="flex gap-6 justify-center my-6">
+        <div className="flex gap-4 sm:gap-6 justify-center my-6 flex-wrap">
           <button
             onClick={() => setType("logo")}
-            className={`px-6 py-2 rounded-full font-semibold ${type === 'logo' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow`}
+            className={`px-5 py-2 rounded-full font-semibold ${type === 'logo' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow`}
           >
             Logo
           </button>
           <button
             onClick={() => setType("banner")}
-            className={`px-6 py-2 rounded-full font-semibold ${type === 'banner' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow`}
+            className={`px-5 py-2 rounded-full font-semibold ${type === 'banner' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow`}
           >
             Banner
           </button>
