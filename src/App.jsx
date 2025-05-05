@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./index.css";
 import "./assets/panton.css";
 
 export default function AppStatus() {
