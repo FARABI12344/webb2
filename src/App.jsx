@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./index.css";
-import "./assets/panton.css";
+import "./index.css"
 
 export default function AppStatus() {
   const [darkMode, setDarkMode] = useState(false);
