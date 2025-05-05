@@ -89,7 +89,7 @@ export default function AppStatus() {
     <div
       onClick={createRipple}
       onContextMenu={handleRightClick}
-      className={`min-h-screen flex flex-col transition-colors duration-500 relative overflow-auto ${darkMode ? 'bg-gradient-to-br from-purple-900 to-black' : 'bg-gradient-to-br from-white to-pink-100'} animate-softShakeStrong`}
+      className={`min-h-screen flex flex-col transition-colors duration-500 relative overflow-auto ${darkMode ? 'bg-gradient-to-br from-purple-900 to-black' : 'bg-gradient-to-br from-white to-pink-100'}`}
     >
       {ripples.map((ripple) => (
         <span
@@ -184,18 +184,10 @@ export default function AppStatus() {
       </div>
 
       <style jsx>{`
-        @keyframes softShakeStrong {
-          0% { transform: translate(0px, 0px); }
-          25% { transform: translate(2px, -2px); }
-          50% { transform: translate(-2px, 2px); }
-          75% { transform: translate(2px, 2px); }
-          100% { transform: translate(0px, 0px); }
-        }
         @keyframes ripple {
           0% { transform: scale(0); opacity: 0.6; }
           100% { transform: scale(3); opacity: 0; }
         }
-        .animate-softShakeStrong { animation: softShakeStrong 4s infinite ease-in-out; }
         .animate-ripple { animation: ripple 0.7s ease-out forwards; }
       `}</style>
     </div>
