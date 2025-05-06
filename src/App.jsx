@@ -114,7 +114,7 @@ export default function AppStatus() {
           style={{ top: r.y - 24 + "px", left: r.x - 24 + "px" }}></span>
       ))}
 
-      {/* ...top section same... */}
+      {/* ...other UI parts... */}
 
       {!loading && (
         <div className="w-full max-w-5xl mx-auto mt-10 px-6">
