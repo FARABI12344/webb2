@@ -30,12 +30,14 @@ export default function AppStatus() {
     }
     adCooldownRef.current = false;
     setLoading(true);
+
     let url;
     if (type === "logo") {
-      url = https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro;
+      url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro`;
     } else {
-      url = https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=1080&seed=36&enhance=true&nologo=true&model=flux-pro;
-    }
+      url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=1080&seed=36&enhance=true&nologo=true&model=flux-pro`;
+}
+
     try {
       const response = await fetch(url);
       const blob = await response.blob();
