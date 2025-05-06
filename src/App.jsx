@@ -15,6 +15,32 @@ export default function AppStatus() {
   const [showThanks, setShowThanks] = useState(false);
   const adCooldownRef = useRef(false);
 
+  const logoPrompts = [
+    "A green field where anime characters are playing football at sunset",
+    "A scientist of the universe",
+    "A sad student who gets pressured by his parents all the time",
+    "A happy dragon with his kid owner.",
+    "A student who is leaving his school sad to go to college",
+    "A speech given by the prime minister",
+    "How social media destroying kids",
+    "How going to school destroying kids creativity"
+  ];
+
+  const bannerPrompts = [
+    "T-Rex at Sunset Angry.",
+    "Random dude giving away money to people who need.",
+    "How social media destroying every kids",
+    "A broken heart guy crying beside the sea"
+  ];
+
+  const getRandomItems = (arr, count) => {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  const discoverLogos = getRandomItems(logoPrompts, 6);
+  const discoverBanners = getRandomItems(bannerPrompts, 2);
+
   const createRipple = (e) => {
     const ripple = { x: e.clientX, y: e.clientY, id: Date.now() };
     setRipples((prev) => [...prev, ripple]);
@@ -184,6 +210,52 @@ export default function AppStatus() {
         <footer className="text-center py-4 text-sm text-gray-500">
           Total images generated: {generatedCount}
         </footer>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold panton-heading mb-4">Discover More!</h2>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            {discoverLogos.slice(0, 3).map((item, i) => (
+              <img
+                key={`logo1-${i}`}
+                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(item)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro`}
+                alt="logo"
+                className="rounded-lg cursor-pointer hover:scale-105 transition-all"
+                onClick={() => {
+                  setPrompt(item);
+                  setType("logo");
+                }}
+              />
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {discoverBanners.map((item, i) => (
+              <img
+                key={`banner-${i}`}
+                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(item)}?width=1920&height=1080&seed=36&enhance=true&nologo=true&model=flux-pro`}
+                alt="banner"
+                className="rounded-lg cursor-pointer hover:scale-105 transition-all"
+                onClick={() => {
+                  setPrompt(item);
+                  setType("banner");
+                }}
+              />
+            ))}
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            {discoverLogos.slice(3).map((item, i) => (
+              <img
+                key={`logo2-${i}`}
+                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(item)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro`}
+                alt="logo"
+                className="rounded-lg cursor-pointer hover:scale-105 transition-all"
+                onClick={() => {
+                  setPrompt(item);
+                  setType("logo");
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       <style>{`
