@@ -13,38 +13,7 @@ export default function AppStatus() {
   const [adTimer, setAdTimer] = useState(null);
   const [adWatching, setAdWatching] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
-  const [discoverPrompts, setDiscoverPrompts] = useState([]);
   const adCooldownRef = useRef(false);
-
-  const logoPrompts = [
-    "A green field where anime characters are playing football at sunset",
-    "A scientist of the universe",
-    "A sad student who gets pressured by his parents all the time",
-    "A happy dragon with his kid owner.",
-    "A student who is leaving his school sad to go to college",
-    "A speech given by the prime minister",
-    "How social media destroying kids",
-    "How going to school destroying kids creativity"
-  ];
-
-  const bannerPrompts = [
-    "T-Rex at Sunset Angry.",
-    "Random dude giving away money to people who need.",
-    "How social media destroying every kids",
-    "A broken heart guy crying beside the sea"
-  ];
-
-  useEffect(() => {
-    const shuffledLogos = [...logoPrompts].sort(() => 0.5 - Math.random()).slice(0, 6);
-    const shuffledBanners = [...bannerPrompts].sort(() => 0.5 - Math.random()).slice(0, 2);
-    const arranged = [
-      shuffledLogos.slice(0, 3).map(p => ({ prompt: p, type: 'logo' })),
-      shuffledBanners.map(p => ({ prompt: p, type: 'banner' })),
-      shuffledLogos.slice(3).map(p => ({ prompt: p, type: 'logo' }))
-    ];
-    setDiscoverPrompts(arranged);
-    downloadAndSetImage();
-  }, []);
 
   const createRipple = (e) => {
     const ripple = { x: e.clientX, y: e.clientY, id: Date.now() };
@@ -63,9 +32,9 @@ export default function AppStatus() {
     setLoading(true);
     let url;
     if (type === "logo") {
-      url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro`;
+      url = https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=500&height=500&seed=36&enhance=true&nologo=true&model=flux-pro;
     } else {
-      url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=1080&seed=36&enhance=true&nologo=true&model=flux-pro`;
+      url = https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=1080&seed=36&enhance=true&nologo=true&model=flux-pro;
     }
     try {
       const response = await fetch(url);
@@ -79,6 +48,8 @@ export default function AppStatus() {
     setLoading(false);
     setAdWatching(false);
   };
+
+  useEffect(() => { downloadAndSetImage(); }, []);
 
   const handleRightClick = (e) => {
     if (!e.target.classList.contains("generated-image")) e.preventDefault();
@@ -108,52 +79,69 @@ export default function AppStatus() {
 
   return (
     <div onClick={createRipple} onContextMenu={handleRightClick}
-      className={`min-h-screen flex flex-col transition-colors duration-500 relative overflow-auto ${darkMode ? 'bg-gradient-to-br from-purple-900 to-black' : 'bg-gradient-to-br from-white to-pink-100'}`}>
+      className={min-h-screen flex flex-col transition-colors duration-500 relative overflow-auto ${darkMode ? 'bg-gradient-to-br from-purple-900 to-black' : 'bg-gradient-to-br from-white to-pink-100'}}>
       {ripples.map((r) => (
         <span key={r.id} className="absolute w-12 h-12 bg-pink-300 rounded-full opacity-50 pointer-events-none animate-ripple"
           style={{ top: r.y - 24 + "px", left: r.x - 24 + "px" }}></span>
       ))}
 
-      {/* ...other UI parts... */}
-
-      {!loading && (
-        <div className="w-full max-w-5xl mx-auto mt-10 px-6">
-          <h2 className="text-3xl panton-heading mb-6 text-center">Discover More!</h2>
-          {discoverPrompts.map((row, i) => (
-            <div key={i} className="flex justify-center flex-wrap gap-6 mb-6">
-              {row.map((item, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    setPrompt(item.prompt);
-                    setType(item.type);
-                    downloadAndSetImage();
-                  }}
-                  className="cursor-pointer hover:scale-105 transition-transform shadow-lg rounded-xl overflow-hidden w-[150px] h-[150px]"
-                >
-                  <img
-                    src={`https://image.pollinations.ai/prompt/${encodeURIComponent(item.prompt)}?width=${item.type === 'logo' ? '500' : '1920'}&height=${item.type === 'logo' ? '500' : '1080'}&seed=36&enhance=true&nologo=true&model=flux-pro`}
-                    alt={item.prompt}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
+      <div className={w-full ${darkMode ? 'bg-purple-950' : 'bg-white'} border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-md font-bold}>
+        <div className={text-2xl sm:text-4xl font-bold tracking-wide ${darkMode ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]' : 'text-black'}}>AKR IMAGE GEN</div>
+        <div className="flex items-center gap-4 text-sm sm:text-base">
+          <button onClick={() => setDarkMode(!darkMode)} className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 px-4 py-2 rounded-full shadow hover:scale-105 transition">
+            {darkMode ? '☀️ Light' : '🌙 Dark'}
+          </button>
+          <a href="https://about.farabi.me" target="_blank" rel="noopener noreferrer"
+            className="text-blue-600 underline font-extrabold hover:text-blue-800 transition-colors">
+            MADE BY FARABI
+          </a>
         </div>
-      )}
+      </div>
 
-      <footer className="text-center py-4 text-sm text-gray-500">
-        Total images generated: {generatedCount}
-      </footer>
+      <div className={mx-auto my-10 p-6 sm:p-10 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.2)] border-[6px] ${darkMode ? 'border-purple-700 bg-gray-900 text-purple-100' : 'border-pink-400 bg-white text-pink-900'} w-[95%] max-w-4xl text-center}>
+        <h1 className="text-3xl sm:text-5xl panton-heading mb-6 tracking-wider">IMAGE GENERATOR</h1>
+        <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Type your prompt here"
+          className={px-6 py-3 rounded-xl text-lg w-full max-w-xl shadow-md outline-none border ${darkMode ? 'border-purple-500 bg-black text-purple-100' : 'border-pink-300 bg-pink-100 text-pink-900'}} />
+        <div className="flex flex-wrap gap-4 justify-center my-6">
+          <button onClick={() => setType("logo")} className={px-6 py-2 rounded-full font-semibold ${type === 'logo' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow}>Logo</button>
+          <button onClick={() => setType("banner")} className={px-6 py-2 rounded-full font-semibold ${type === 'banner' ? 'bg-blue-500 text-white' : 'bg-white border'} shadow}>Banner</button>
+        </div>
 
-      <style jsx>{`
+        {adRequired ? (
+          <div>
+            <p className="text-red-500 font-semibold">Please watch an ad to continue</p>
+            <p className="text-sm italic">It may redirect you to another website</p>
+            <button onClick={startAdCountdown} className="mt-2 bg-pink-500 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-600">5 SECOND AD</button>
+            {adTimer !== null && <p className="mt-2 text-lg font-bold">{adTimer > 0 ? Waiting: ${adTimer}s : ''}</p>}
+          </div>
+        ) : showThanks ? (
+          <p className="text-green-500 text-lg mt-4 font-bold">Thanks for watching the ad! It helps us revive.</p>
+        ) : (
+          <button onClick={downloadAndSetImage} className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full text-lg font-bold hover:scale-105 transition-all">
+            Generate Image
+          </button>
+        )}
+
+        {loading && <p className="text-lg mt-4">Loading...</p>}
+        {!loading && imageUrl && (
+          <div className="mt-6 flex justify-center">
+            <img src={imageUrl} alt="Generated"
+              className="generated-image rounded-xl shadow-lg max-w-full max-h-[400px] transition-transform duration-300 hover:scale-105 cursor-pointer" />
+          </div>
+        )}
+
+        <footer className="text-center py-4 text-sm text-gray-500">
+          Total images generated: {generatedCount}
+        </footer>
+      </div>
+
+      <style jsx>{
         @keyframes ripple {
           0% { transform: scale(0); opacity: 0.6; }
           100% { transform: scale(3); opacity: 0; }
         }
         .animate-ripple { animation: ripple 0.7s ease-out forwards; }
-      `}</style>
+      }</style>
     </div>
   );
 }
