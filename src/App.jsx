@@ -7,10 +7,10 @@ export default function AppStatus() {
   const [content, setContent] = useState("");
   const [filename, setFilename] = useState("myfile");
   const [extension, setExtension] = useState(".txt");
-  const [adRequired, setAdRequired] = useState(true);
+  const [adInProgress, setAdInProgress] = useState(false);
   const [adTimer, setAdTimer] = useState(null);
-  const [adWatching, setAdWatching] = useState(false);
-  const [showThanks, setShowThanks] = useState(false);
+  const [allowDownload, setAllowDownload] = useState(false);
+  const downloadedFiles = useRef(new Set());
   const adCooldownRef = useRef(false);
 
   const createRipple = (e) => {
@@ -21,8 +21,9 @@ export default function AppStatus() {
     }, 800);
   };
 
-  const startAdCountdown = () => {
-    setAdWatching(true);
+  const handleAdStart = () => {
+    if (!filename || downloadedFiles.current.has(`${filename}${extension}`)) return;
+    setAdInProgress(true);
     window.open("https://sawutser.top/4/9293232", "_blank");
     let countdown = 5;
     setAdTimer(countdown);
@@ -32,23 +33,21 @@ export default function AppStatus() {
       if (countdown <= 0) {
         clearInterval(interval);
         setAdTimer(null);
-        setAdRequired(false);
-        setShowThanks(true);
-        adCooldownRef.current = true;
-        setTimeout(() => {
-          setShowThanks(false);
-          handleDownload();
-        }, 1500);
+        setAllowDownload(true);
+        setAdInProgress(false);
       }
     }, 1000);
   };
 
   const handleDownload = () => {
+    if (downloadedFiles.current.has(`${filename}${extension}`)) return;
     const blob = new Blob([content], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `${filename}${extension}`;
     link.click();
+    downloadedFiles.current.add(`${filename}${extension}`);
+    setAllowDownload(false);
   };
 
   return (
@@ -122,23 +121,33 @@ export default function AppStatus() {
             <option value=".json">.json</option>
           </select>
 
-          {adRequired ? (
+          {!allowDownload && !adInProgress && (
+            <button
+              onClick={handleAdStart}
+              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all"
+            >
+              Watch Ad to Download
+            </button>
+          )}
+
+          {adInProgress && (
             <div className="text-center">
-              <p className="text-red-500 font-semibold">Please watch an ad to download</p>
+              <p className="text-red-500 font-semibold">Please watch an ad to unlock download</p>
               <p className="text-sm italic">It may redirect you to another website</p>
-              <button
-                onClick={startAdCountdown}
-                className="mt-2 bg-pink-500 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-600"
-              >
-                5 SECOND AD
-              </button>
               {adTimer !== null && (
-                <p className="mt-2 text-lg font-bold">{adTimer > 0 ? `Waiting: ${adTimer}s` : ''}</p>
+                <p className="mt-2 text-lg font-bold">Waiting: {adTimer}s</p>
               )}
             </div>
-          ) : showThanks ? (
-            <p className="text-green-500 text-lg mt-4 font-bold">Thanks for watching the ad! Download starting...</p>
-          ) : null}
+          )}
+
+          {allowDownload && (
+            <button
+              onClick={handleDownload}
+              className="bg-green-600 text-white px-6 py-3 rounded-full font-bold hover:bg-green-700 transition"
+            >
+              Download File
+            </button>
+          )}
         </div>
       </div>
 
