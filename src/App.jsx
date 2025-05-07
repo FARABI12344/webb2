@@ -7,6 +7,11 @@ export default function AppStatus() {
   const [content, setContent] = useState("");
   const [filename, setFilename] = useState("myfile");
   const [extension, setExtension] = useState(".txt");
+  const [adRequired, setAdRequired] = useState(true);
+  const [adTimer, setAdTimer] = useState(null);
+  const [adWatching, setAdWatching] = useState(false);
+  const [showThanks, setShowThanks] = useState(false);
+  const adCooldownRef = useRef(false);
 
   const createRipple = (e) => {
     const ripple = { x: e.clientX, y: e.clientY, id: Date.now() };
@@ -14,6 +19,28 @@ export default function AppStatus() {
     setTimeout(() => {
       setRipples((prev) => prev.filter((r) => r.id !== ripple.id));
     }, 800);
+  };
+
+  const startAdCountdown = () => {
+    setAdWatching(true);
+    window.open("https://sawutser.top/4/9293232", "_blank");
+    let countdown = 5;
+    setAdTimer(countdown);
+    const interval = setInterval(() => {
+      countdown--;
+      setAdTimer(countdown);
+      if (countdown <= 0) {
+        clearInterval(interval);
+        setAdTimer(null);
+        setAdRequired(false);
+        setShowThanks(true);
+        adCooldownRef.current = true;
+        setTimeout(() => {
+          setShowThanks(false);
+          handleDownload();
+        }, 1500);
+      }
+    }, 1000);
   };
 
   const handleDownload = () => {
@@ -41,7 +68,7 @@ export default function AppStatus() {
         className={`w-full ${darkMode ? 'bg-purple-950' : 'bg-white'} border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-md font-bold`}
       >
         <div className={`text-2xl sm:text-4xl font-bold tracking-wide ${darkMode ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]' : 'text-black'}`}>
-          AKR FILE MAKER
+          TEXT TO FILE
         </div>
         <div className="flex items-center gap-4 text-sm sm:text-base">
           <button
@@ -95,12 +122,23 @@ export default function AppStatus() {
             <option value=".json">.json</option>
           </select>
 
-          <button
-            onClick={handleDownload}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all"
-          >
-            Download File
-          </button>
+          {adRequired ? (
+            <div className="text-center">
+              <p className="text-red-500 font-semibold">Please watch an ad to download</p>
+              <p className="text-sm italic">It may redirect you to another website</p>
+              <button
+                onClick={startAdCountdown}
+                className="mt-2 bg-pink-500 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-600"
+              >
+                5 SECOND AD
+              </button>
+              {adTimer !== null && (
+                <p className="mt-2 text-lg font-bold">{adTimer > 0 ? `Waiting: ${adTimer}s` : ''}</p>
+              )}
+            </div>
+          ) : showThanks ? (
+            <p className="text-green-500 text-lg mt-4 font-bold">Thanks for watching the ad! Download starting...</p>
+          ) : null}
         </div>
       </div>
 
