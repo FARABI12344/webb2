@@ -1,17 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./index.css";
 
 export default function AppStatus() {
   const [darkMode, setDarkMode] = useState(false);
   const [ripples, setRipples] = useState([]);
-  const [content, setContent] = useState("");
-  const [filename, setFilename] = useState("myfile");
-  const [extension, setExtension] = useState(".txt");
-  const [adInProgress, setAdInProgress] = useState(false);
-  const [adTimer, setAdTimer] = useState(null);
-  const [allowDownload, setAllowDownload] = useState(false);
-  const downloadedFiles = useRef(new Set());
-  const adCooldownRef = useRef(false);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [colorHex, setColorHex] = useState("#ffffff");
+  const [colorName, setColorName] = useState("White");
+  const canvasRef = useRef(null);
+  const imageRef = useRef(null);
 
   const createRipple = (e) => {
     const ripple = { x: e.clientX, y: e.clientY, id: Date.now() };
@@ -21,38 +18,77 @@ export default function AppStatus() {
     }, 800);
   };
 
-  const handleAdStart = () => {
-    if (!filename || downloadedFiles.current.has(`${filename}${extension}`)) return;
-    setAdInProgress(true);
-    window.open("https://sawutser.top/4/9293232", "_blank");
-    let countdown = 5;
-    setAdTimer(countdown);
-    const interval = setInterval(() => {
-      countdown--;
-      setAdTimer(countdown);
-      if (countdown <= 0) {
-        clearInterval(interval);
-        setAdTimer(null);
-        setAllowDownload(true);
-        setAdInProgress(false);
-      }
-    }, 1000);
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setImageSrc(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleDownload = () => {
-    if (downloadedFiles.current.has(`${filename}${extension}`)) return;
-    const blob = new Blob([content], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${filename}${extension}`;
-    link.click();
-    downloadedFiles.current.add(`${filename}${extension}`);
-    setAllowDownload(false);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setImageSrc(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
+
+  const handleMouseMove = (e) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor(e.clientX - rect.left);
+    const y = Math.floor(e.clientY - rect.top);
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+    setColorHex(hex);
+    setColorName(getColorName(pixel[0], pixel[1], pixel[2]));
+  };
+
+  const rgbToHex = (r, g, b) =>
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      })
+      .join("");
+
+  const getColorName = (r, g, b) => {
+    // Basic color matching (expandable)
+    if (r > 200 && g < 100 && b < 100) return "Red";
+    if (r < 100 && g > 200 && b < 100) return "Green";
+    if (r < 100 && g < 100 && b > 200) return "Blue";
+    if (r > 200 && g > 200 && b < 100) return "Yellow";
+    if (r > 200 && g > 200 && b > 200) return "White";
+    if (r < 50 && g < 50 && b < 50) return "Black";
+    return "Unknown";
+  };
+
+  const handleCopy = () => navigator.clipboard.writeText(colorHex);
+
+  useEffect(() => {
+    if (imageSrc && canvasRef.current && imageRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      const img = imageRef.current;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+      };
+    }
+  }, [imageSrc]);
 
   return (
     <div
       onClick={createRipple}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={handleDrop}
       className={`min-h-screen flex flex-col transition-colors duration-500 relative overflow-auto ${darkMode ? 'bg-gradient-to-br from-purple-900 to-black' : 'bg-gradient-to-br from-white to-pink-100'}`}
     >
       {ripples.map((r) => (
@@ -67,7 +103,7 @@ export default function AppStatus() {
         className={`w-full ${darkMode ? 'bg-purple-950' : 'bg-white'} border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-md font-bold`}
       >
         <div className={`text-2xl sm:text-4xl font-bold tracking-wide ${darkMode ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]' : 'text-black'}`}>
-          TEXT TO FILE
+          COLOR PICKER
         </div>
         <div className="flex items-center gap-4 text-sm sm:text-base">
           <button
@@ -87,68 +123,44 @@ export default function AppStatus() {
         </div>
       </div>
 
-      <div
-        className={`mx-auto my-10 p-6 sm:p-10 rounded-[2.5rem] shadow-[0_0_40px_rgba(0,0,0,0.2)] border-[6px] ${darkMode ? 'border-purple-700 bg-gray-900 text-purple-100' : 'border-pink-400 bg-white text-pink-900'} w-[95%] max-w-4xl text-center`}
-      >
-        <h1 className="text-3xl sm:text-5xl panton-heading mb-6 tracking-wider">PASTE TO FILE</h1>
-
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Paste your text or code here..."
-          className={`w-full h-64 p-4 rounded-xl text-base font-mono resize-none shadow-md border outline-none ${darkMode ? 'border-purple-500 bg-black text-purple-100' : 'border-pink-300 bg-pink-100 text-pink-900'}`}
+      <div className="flex flex-col items-center justify-center mt-10 px-4 text-center">
+        <label
+          htmlFor="imageInput"
+          className="cursor-pointer text-xl font-bold py-6 px-10 rounded-full border-4 border-dashed border-pink-400 bg-white shadow-lg hover:bg-pink-100 transition"
+        >
+          Drag or Upload Image
+        </label>
+        <input
+          id="imageInput"
+          type="file"
+          accept="image/png, image/jpeg, image/webp, image/gif"
+          onChange={handleFileChange}
+          hidden
         />
 
-        <div className="flex flex-wrap justify-center gap-4 mt-6">
-          <input
-            type="text"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            placeholder="File name (no extension)"
-            className="px-4 py-2 rounded-lg shadow-md border outline-none w-52 text-center"
-          />
-
-          <select
-            value={extension}
-            onChange={(e) => setExtension(e.target.value)}
-            className="px-4 py-2 rounded-lg shadow-md border outline-none w-32 text-center"
-          >
-            <option value=".txt">.txt</option>
-            <option value=".js">.js</option>
-            <option value=".py">.py</option>
-            <option value=".html">.html</option>
-            <option value=".css">.css</option>
-            <option value=".json">.json</option>
-          </select>
-
-          {!allowDownload && !adInProgress && (
-            <button
-              onClick={handleAdStart}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all"
-            >
-              Watch Ad to Download
-            </button>
-          )}
-
-          {adInProgress && (
-            <div className="text-center">
-              <p className="text-red-500 font-semibold">Please watch an ad to unlock download</p>
-              <p className="text-sm italic">It may redirect you to another website</p>
-              {adTimer !== null && (
-                <p className="mt-2 text-lg font-bold">Waiting: {adTimer}s</p>
-              )}
+        {imageSrc && (
+          <div className="relative mt-10">
+            <canvas
+              ref={canvasRef}
+              onMouseMove={handleMouseMove}
+              className="rounded-xl border-4 border-pink-400"
+            ></canvas>
+            <img ref={imageRef} src={imageSrc} alt="Uploaded" className="hidden" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-32 h-32 rounded-full border-4 border-white backdrop-blur-sm"></div>
             </div>
-          )}
-
-          {allowDownload && (
-            <button
-              onClick={handleDownload}
-              className="bg-green-600 text-white px-6 py-3 rounded-full font-bold hover:bg-green-700 transition"
-            >
-              Download File
-            </button>
-          )}
-        </div>
+            <div className="absolute top-4 left-4 bg-white/80 rounded-xl p-3 shadow text-left text-sm sm:text-base font-semibold flex flex-col items-start">
+              <div>Hex: <span className="font-mono">{colorHex}</span></div>
+              <div>Name: <span>{colorName}</span></div>
+              <button
+                onClick={handleCopy}
+                className="mt-2 bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600"
+              >
+                Copy Hex
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <style>{`
